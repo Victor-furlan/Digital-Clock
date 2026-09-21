@@ -35,19 +35,25 @@ Displays real-time clock and date, fires alarms with 8-bit melodies, and allows 
 
 ## Pin Mapping
 
-| Component | ESP32 Pin |
-|---|---|
-| TFT DC | GPIO 5 |
-| TFT CS | GPIO 15 |
-| TFT RST | GPIO 4 |
-| TFT MOSI | GPIO 23 |
-| TFT SCK | GPIO 18 |
-| TFT VCC | 3.3V |
-| TFT LED | 5V (or 3.3V) |
-| RTC SDA | GPIO 21 |
-| RTC SCL | GPIO 22 |
-| Buzzer | GPIO 17 |
-| TTP223 | GPIO 13 |
+| Componente | Pino do componente | Pino ESP32 |
+|---|---|---|
+| TFT ILI9341 | DC | GPIO 5 |
+| TFT ILI9341 | CS | GPIO 15 |
+| TFT ILI9341 | RST | GPIO 4 |
+| TFT ILI9341 | MOSI / SDI | GPIO 23 |
+| TFT ILI9341 | SCK | GPIO 18 |
+| TFT ILI9341 | VCC | 3.3V |
+| TFT ILI9341 | LED | 5V (or 3.3V) |
+| TFT ILI9341 | GND | GND |
+| DS3231 RTC | SDA | GPIO 21 |
+| DS3231 RTC | SCL | GPIO 22 |
+| DS3231 RTC | VCC | 3.3V |
+| DS3231 RTC | GND | GND |
+| Buzzer passivo | + / Sinal | GPIO 17 |
+| Buzzer passivo | - / GND | GND |
+| TTP223 | SIG | GPIO 13 |
+| TTP223 | VCC | 3.3V |
+| TTP223 | GND | GND |
 
 ---
 
