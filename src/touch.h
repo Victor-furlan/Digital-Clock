@@ -3,5 +3,6 @@
 
     void initializeTTP();
     int identifyTouchType();
+    bool isTouched();
 
 #endif

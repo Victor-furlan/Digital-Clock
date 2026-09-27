@@ -7,8 +7,10 @@
 #include <RTClib.h>
 
 Alarme alarmes[3];
-
 Preferences prefs;
+
+static int ultimoMinutoDisparado = -1;
+static int ultimaHoraDisparada = -1;
 
 void inicializeAlarms()
 {
@@ -16,20 +18,19 @@ void inicializeAlarms()
     
     for (int i = 0; i < 3; i++)
     {
-        alarmes[i].nome = prefs.getString(("a" + String(i) + "nome").c_str(), "");
-        alarmes[i].icone = prefs.getString(("a" + String(i) + "icone").c_str(), "");
-        alarmes[i].hora = prefs.getInt(("a" + String(i) + "hora").c_str(), 0);
+        alarmes[i].nome = prefs.getString(("a" + String(i) + "nome").c_str(), i == 0 ? "Acordar" : (i == 1 ? "Remédio" : "Academia"));
+        alarmes[i].icone = prefs.getString(("a" + String(i) + "icone").c_str(), "💼");
+        alarmes[i].hora = prefs.getInt(("a" + String(i) + "hora").c_str(), 7 + i);
         alarmes[i].minuto = prefs.getInt(("a" + String(i) + "minuto").c_str(), 0);
-        alarmes[i].melodia = prefs.getString(("a" + String(i) + "melodia").c_str(), "");
+        alarmes[i].melodia = prefs.getString(("a" + String(i) + "melodia").c_str(), "mario");
         alarmes[i].ativo = prefs.getBool(("a" + String(i) + "ativo").c_str(), false);
     }
     
-
     prefs.end();
 }
 
 void saveAlarms() {
-        prefs.begin("alarmes", false);
+    prefs.begin("alarmes", false);
     
     for (int i = 0; i < 3; i++)
     {
@@ -45,19 +46,30 @@ void saveAlarms() {
 }
 
 void checkAlarms() {
+    DateTime agora = getHour();
+    
+    // Reseta trava de disparo quando o minuto mudar
+    if (agora.minute() != ultimoMinutoDisparado || agora.hour() != ultimaHoraDisparada) {
+        // pronto para novo disparo
+    } else {
+        return; // Ja disparou neste minuto
+    }
+
     for (int i = 0; i < 3; i++)
     {
-       DateTime agora = getHour();
        if (alarmes[i].ativo && alarmes[i].hora == agora.hour() && alarmes[i].minuto == agora.minute())
        {
+            ultimoMinutoDisparado = agora.minute();
+            ultimaHoraDisparada = agora.hour();
             triggerAlarm(alarmes[i]);
+            break;
        }
-       
     }
-    
 }
 
 void triggerAlarm(Alarme a) {
+    Serial.print("[ALARME] Disparando alarme: ");
+    Serial.println(a.nome);
     handleAlarm(a);
     playRingTone(a.melodia);
 }

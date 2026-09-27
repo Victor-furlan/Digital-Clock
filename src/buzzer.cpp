@@ -1,23 +1,48 @@
 #include "buzzer.h"
 #include "config.h"
+#include "touch.h"
 #include <Arduino.h>
 
-void playRingTone(String rttl) {
-    // Separa as 3 partes do RTTTL
-    int pos1 = rttl.indexOf(':');
-    int pos2 = rttl.indexOf(':', pos1 + 1);
+static const char* RTTTL_MARIO = "Mario:d=4,o=5,b=100:16e6,16e6,16p,16e6,16p,16c6,16e6,8g6,8p,8g";
+static const char* RTTTL_STARWARS = "StarWars:d=4,o=5,b=45:8e,8e,8e,16c,16p,8g,8e,16c,16p,8g,4e";
+static const char* RTTTL_HARRYPOTTER = "HarryPotter:d=4,o=5,b=140:4b4,8e,16g,8f#,4e,8b,4a.,4f#.";
 
-    String config = rttl.substring(pos1 + 1, pos2);
-    String notas  = rttl.substring(pos2 + 1);
+void playRingTone(String rttl) {
+    String song = rttl;
+    song.trim();
+    song.toLowerCase();
+
+    if (song == "mario" || song.indexOf("mario") != -1) {
+        song = RTTTL_MARIO;
+    } else if (song == "starwars" || song.indexOf("starwars") != -1) {
+        song = RTTTL_STARWARS;
+    } else if (song == "harrypotter" || song.indexOf("harrypotter") != -1) {
+        song = RTTTL_HARRYPOTTER;
+    } else if (song.indexOf(':') == -1) {
+        // Fallback padrao se string nao contem formato RTTTL
+        song = RTTTL_MARIO;
+    }
+
+    // Separa as 3 partes do RTTTL
+    int pos1 = song.indexOf(':');
+    int pos2 = song.indexOf(':', pos1 + 1);
+
+    if (pos1 == -1 || pos2 == -1) return;
+
+    String config = song.substring(pos1 + 1, pos2);
+    String notas  = song.substring(pos2 + 1);
 
     // Extrai configurações padrão
     int bpmPos = config.indexOf("b=");
     int durPos = config.indexOf("d=");
     int octPos = config.indexOf("o=");
 
-    int bpm      = config.substring(bpmPos + 2, config.indexOf(',', bpmPos)).toInt();
-    int durPad   = config.substring(durPos + 2, config.indexOf(',', durPos)).toInt();
-    int octPad   = config.substring(octPos + 2, config.indexOf(',', octPos)).toInt();
+    int bpm    = (bpmPos != -1) ? config.substring(bpmPos + 2, config.indexOf(',', bpmPos)).toInt() : 100;
+    int durPad = (durPos != -1) ? config.substring(durPos + 2, config.indexOf(',', durPos)).toInt() : 4;
+    int octPad = (octPos != -1) ? config.substring(octPos + 2, config.indexOf(',', octPos)).toInt() : 5;
+
+    if (bpm <= 0) bpm = 100;
+    if (durPad <= 0) durPad = 4;
 
     // Duração de um tempo em ms
     int tempoDur = 60000 / bpm;
@@ -28,6 +53,11 @@ void playRingTone(String rttl) {
     // Processa cada nota
     int i = 0;
     while (i < notas.length()) {
+        if (isTouched()) {
+            noTone(BUZZER);
+            break;
+        }
+
         // Duração da nota (opcional no início)
         int dur = durPad;
         if (isDigit(notas[i])) {
@@ -78,6 +108,7 @@ void playRingTone(String rttl) {
         for (int o = oitava; o < 4; o++) freq /= 2;
 
         // Calcula duração em ms
+        if (dur <= 0) dur = 4;
         int ms = tempoDur * 4 / dur;
         if (ponto) ms = ms * 1.5;
 
@@ -85,7 +116,18 @@ void playRingTone(String rttl) {
         if (freq > 0) {
             tone(BUZZER, freq, ms * 0.9);
         }
-        delay(ms);
+        
+        // Espera nota respeitando interrupcao por toque
+        int elapsed = 0;
+        while (elapsed < ms) {
+            if (isTouched()) {
+                noTone(BUZZER);
+                return;
+            }
+            delay(10);
+            elapsed += 10;
+        }
+        
         noTone(BUZZER);
 
         // Pula vírgula
