@@ -141,7 +141,7 @@ static String generateHTML() {
         html += "</div>";
         html += "<div class=\"field\"><label>Horário</label><input type=\"time\" name=\"a" + String(i) + "hora\" value=\"" + timeVal + "\"></div>";
         html += "<div class=\"field\"><label>Nome</label><input type=\"text\" name=\"a" + String(i) + "nome\" value=\"" + alarmes[i].nome + "\"></div>";
-        
+
         // Icones
         html += "<div class=\"field\"><label>Ícone</label><select name=\"a" + String(i) + "icone\">";
         const char* icons[] = {"💼", "💊", "🏋️", "📚", "☕", "🔔"};
@@ -154,9 +154,15 @@ static String generateHTML() {
 
         // Melodias
         html += "<div class=\"field\"><label>Melodia</label><select name=\"a" + String(i) + "melodia\">";
-        const char* mels[] = {"mario", "starwars", "harrypotter"};
-        const char* melLabels[] = {"Super Mario", "Star Wars", "Harry Potter"};
-        for (int k = 0; k < 3; k++) {
+        const char* mels[] = {
+            "samsung", "mario", "starwars", "harrypotter", "tetris",
+            "batman", "letitbe", "macarena", "smurfs", "spiderman", "takeonme", "titanic"
+        };
+        const char* melLabels[] = {
+            "📱 Samsung (Padrão)", "🍄 Super Mario", "⚔️ Star Wars", "🧙 Harry Potter", "🎮 Tetris",
+            "🦇 Batman", "🎵 Let It Be", "💃 Macarena", "🍄 Smurfs", "🕷️ Spiderman", "🎸 Take On Me", "🚢 Titanic"
+        };
+        for (int k = 0; k < 12; k++) {
             String sel = (alarmes[i].melodia == String(mels[k])) ? "selected" : "";
             html += "<option value=\"" + String(mels[k]) + "\" " + sel + ">" + String(melLabels[k]) + "</option>";
         }

@@ -3,25 +3,37 @@
 #include "touch.h"
 #include <Arduino.h>
 
-static const char* RTTTL_MARIO = "Mario:d=4,o=5,b=100:16e6,16e6,16p,16e6,16p,16c6,16e6,8g6,8p,8g";
-static const char* RTTTL_STARWARS = "StarWars:d=4,o=5,b=45:8e,8e,8e,16c,16p,8g,8e,16c,16p,8g,4e";
-static const char* RTTTL_HARRYPOTTER = "HarryPotter:d=4,o=5,b=140:4b4,8e,16g,8f#,4e,8b,4a.,4f#.";
+static const char* RTTTL_MARIO        = "Mario:d=4,o=5,b=200:16e6,16e6,32p,8e6,16c6,8e6,8g6,8p,8g5,8p,8c6,16p,8g5,16p,8e5,16p,8a5,8b5,16a#5,8a5,16g5,16e6,16g6,8a6,16f6,8g6,8e6,16c6,16d6,8b5";
+static const char* RTTTL_STARWARS     = "StarWars:d=4,o=5,b=112:a4,a4,a4,f4,16c5,a4,f4,16c5,2a4,e5,e5,e5,f5,16c5,a#4,f4,16c5,2a4";
+static const char* RTTTL_HARRYPOTTER  = "HarryPotter:d=8,o=5,b=140:b4,e5,g5,f#5,e5,2b5,a5,2f#5,2e5,2b5,e5,g5,f#5,d5,2f5,4e5";
+static const char* RTTTL_SAMSUNG      = "Samsung:d=8,o=5,b=125:c6,d6,e6,f6,e6,f6,g6,p,e6,f6,g6,a6,g6,a6,b6,p,4g6,4a6,4g6,4e6";
+static const char* RTTTL_TETRIS       = "Tetris:d=4,o=5,b=160:e6,8b5,8c6,d6,8c6,8b5,a5,8a5,8c6,e6,8d6,8c6,b5,8c6,d6,e6,c6,a5,a5";
+static const char* RTTTL_BATMAN       = "Batman:o=5,d=8,b=180:d,d,c#,c#,c,c,c#,c#,d,d,c#,c#,c,c,c#,c#,d,d#,c,c#,c,c,c#,c#,f,p,4f";
+static const char* RTTTL_LETITBE      = "LetItBe:o=5,d=8,b=100:16e6,d6,4c6,16e6,g6,a6,g6.,16g6,g6,e6,16d6,c6,16a,g,4e6.,4p,e6,16e6,f6.,e6,e6,d6,16p,16e6,16d6,d6,2c6..";
+static const char* RTTTL_MACARENA     = "Macarena:o=5,d=8,b=180:f,f,f,4f,f,f,f,f,f,f,f,a,c,c,4f,f,f,4f,f,f,f,f,f,f,d,c,4p,4f,f,f,4f,f,f,f,f,f,f,f,a,4p,2c6.,4a,c6,a,f,4p,2p";
+static const char* RTTTL_SMURFS       = "Smurfs:o=5,d=4,b=200:2c6,f6.,8c6,d6,a#,2g,c6.,8a,f,a,2g,p,16g,16a,16a#,16b,2c6";
+static const char* RTTTL_SPIDERMAN    = "Spiderman:o=6,d=4,b=200:c,8d#,g.,p,f#,8d#,c.,p,c,8d#,g,8g#,g,f#,8d#,c.,p,f,8g#,c7.,p,a#,8g#,f.,p,c,8d#,g.,p,f#,8d#,c,p,8g#,2g,p,8f#,f#,8d#,f,8d#,2c";
+static const char* RTTTL_TAKEONME     = "TakeOnMe:o=5,d=8,b=160:f#,f#,f#,d,p,b4,p,e,p,e,p,e,g#,g#,a,b,a,a,a,e,p,d,p,f#,p,f#,p,f#,e,e,f#,e";
+static const char* RTTTL_TITANIC      = "Titanic:o=6,d=8,b=120:c,d,2e.,d,c,d,g,2g,f,e,4c,2a5,g5,f5,16d5,16e5,2d5,p,c,d,2e.,d,c,d,g,2g,e,g,2a,2g,16d,16e,2d.";
 
 void playRingTone(String rttl) {
     String song = rttl;
     song.trim();
     song.toLowerCase();
 
-    if (song == "mario" || song.indexOf("mario") != -1) {
-        song = RTTTL_MARIO;
-    } else if (song == "starwars" || song.indexOf("starwars") != -1) {
-        song = RTTTL_STARWARS;
-    } else if (song == "harrypotter" || song.indexOf("harrypotter") != -1) {
-        song = RTTTL_HARRYPOTTER;
-    } else if (song.indexOf(':') == -1) {
-        // Fallback padrao se string nao contem formato RTTTL
-        song = RTTTL_MARIO;
-    }
+    if (song.indexOf("mario") != -1)          { song = RTTTL_MARIO; }
+    else if (song.indexOf("starwars") != -1)  { song = RTTTL_STARWARS; }
+    else if (song.indexOf("harrypotter") != -1){ song = RTTTL_HARRYPOTTER; }
+    else if (song.indexOf("samsung") != -1)   { song = RTTTL_SAMSUNG; }
+    else if (song.indexOf("tetris") != -1)    { song = RTTTL_TETRIS; }
+    else if (song.indexOf("batman") != -1)    { song = RTTTL_BATMAN; }
+    else if (song.indexOf("letitbe") != -1)   { song = RTTTL_LETITBE; }
+    else if (song.indexOf("macarena") != -1)  { song = RTTTL_MACARENA; }
+    else if (song.indexOf("smurfs") != -1)    { song = RTTTL_SMURFS; }
+    else if (song.indexOf("spiderman") != -1) { song = RTTTL_SPIDERMAN; }
+    else if (song.indexOf("takeonme") != -1)  { song = RTTTL_TAKEONME; }
+    else if (song.indexOf("titanic") != -1)   { song = RTTTL_TITANIC; }
+    else if (song.indexOf(':') == -1)          { song = RTTTL_SAMSUNG; }
 
     // Separa as 3 partes do RTTTL
     int pos1 = song.indexOf(':');
@@ -44,21 +56,14 @@ void playRingTone(String rttl) {
     if (bpm <= 0) bpm = 100;
     if (durPad <= 0) durPad = 4;
 
-    // Duração de um tempo em ms
     int tempoDur = 60000 / bpm;
 
-    // Frequências das notas (índice: 0=pausa, 1=C, 2=D, 3=E, 4=F, 5=G, 6=A, 7=B)
     int freqs[] = {0, 262, 294, 330, 349, 392, 440, 494};
 
-    // Processa cada nota
     int i = 0;
     while (i < notas.length()) {
-        if (isTouched()) {
-            noTone(BUZZER);
-            break;
-        }
+        if (isTouched()) { noTone(BUZZER); break; }
 
-        // Duração da nota (opcional no início)
         int dur = durPad;
         if (isDigit(notas[i])) {
             dur = 0;
@@ -68,7 +73,6 @@ void playRingTone(String rttl) {
             }
         }
 
-        // Nota
         int freq = 0;
         char nota = tolower(notas[i]);
         i++;
@@ -83,54 +87,35 @@ void playRingTone(String rttl) {
             case 'p': freq = 0;        break;
         }
 
-        // Sustenido (#)
-        if (i < notas.length() && notas[i] == '#') {
-            freq = freq * 1.059;
-            i++;
-        }
+        if (i < notas.length() && notas[i] == '#') { freq = freq * 1.059; i++; }
 
-        // Ponto (aumenta duração em 50%)
         bool ponto = false;
-        if (i < notas.length() && notas[i] == '.') {
-            ponto = true;
-            i++;
-        }
+        if (i < notas.length() && notas[i] == '.') { ponto = true; i++; }
 
-        // Oitava
         int oitava = octPad;
-        if (i < notas.length() && isDigit(notas[i])) {
-            oitava = notas[i] - '0';
-            i++;
+        if (i < notas.length() && isDigit(notas[i])) { oitava = notas[i] - '0'; i++; }
+
+        // Ajusta frequência pela oitava
+        if (oitava > octPad) {
+            for (int o = octPad; o < oitava; o++) freq *= 2;
+        } else if (oitava < octPad) {
+            for (int o = oitava; o < octPad; o++) freq /= 2;
         }
 
-        // Ajusta frequência pela oitava (oitava 4 = base)
-        for (int o = 4; o < oitava; o++) freq *= 2;
-        for (int o = oitava; o < 4; o++) freq /= 2;
-
-        // Calcula duração em ms
         if (dur <= 0) dur = 4;
         int ms = tempoDur * 4 / dur;
         if (ponto) ms = ms * 1.5;
 
-        // Toca
-        if (freq > 0) {
-            tone(BUZZER, freq, ms * 0.9);
-        }
-        
-        // Espera nota respeitando interrupcao por toque
+        if (freq > 0) tone(BUZZER, freq, ms * 0.9);
+
         int elapsed = 0;
         while (elapsed < ms) {
-            if (isTouched()) {
-                noTone(BUZZER);
-                return;
-            }
+            if (isTouched()) { noTone(BUZZER); return; }
             delay(10);
             elapsed += 10;
         }
-        
-        noTone(BUZZER);
 
-        // Pula vírgula
+        noTone(BUZZER);
         if (i < notas.length() && notas[i] == ',') i++;
     }
 }

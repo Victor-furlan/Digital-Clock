@@ -33,7 +33,7 @@ void setup() {
   } else {
     handleQrCode("Sem Wi-Fi");
   }
-  delay(5000);
+  delay(10000);
 
   inicializeWebServer();
   Serial.println("[SYSTEM] Setup concluido. Entrando no loop principal.");
